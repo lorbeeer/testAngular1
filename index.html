@@ -5,11 +5,14 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>       
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
-    <script src="./app.js"></script>
+    <script src="./validate.js"></script>
+    <script src="./app2.js"></script>
     <script src="./ngGeolocation.js"></script>
+    
   </head>
   <body>
       <div ng-controller="MyController">
+          
           <div class="container">
               <div>
                   <label>Search name<label>
@@ -22,6 +25,9 @@
                   <input type="text" ng-model="searchEmail">
                    
               </div>
+              <validate-unique tasks="tasks">
+                    
+                </validate-unique>
               <div>
                 <p>Sort by:</p>
                 <button ng-click="changeSort('name')">Name</button>
@@ -60,17 +66,17 @@
                               <form ng-submit="addItem()" name="myForm" role="form" novalidate>
                                   <div class="form-group">
                                       <label> Name</label>
-                                      <input type="text" ng-model="newItem.name" class="form-control" name="name" placeholder="Enter name" required>
+                                      <input type="text" ng-model="newItem.name" class="form-control" name="name" placeholder="Enter name" dbrans-validate="{unique: isUniqueName}" required>
                                       <span class="errorMessage" ng-show="myForm.name.$touched && myForm.name.$invalid">
-                                              Name is required
+                                              Name is required and must be unique
                                       </span>
                                       
                                   </div>
                                   <div class="form-group">
                                       <label> Username</label>
-                                      <input type="text" ng-model="newItem.username" class="form-control" name="username" placeholder="Enter username" required>
+                                      <input type="text" ng-model="newItem.username" class="form-control" name="username" placeholder="Enter username" dbrans-validate="{unique: isUniqueUsername}">
                                       <span class="errorMessage" ng-show="myForm.username.$touched && myForm.username.$invalid">
-                                              Username is required
+                                              Username required and must be unique
                                       </span>
                                       
                                       
@@ -119,9 +125,9 @@
                                   <!--COMPANY-->
                                   <div class="form-group">
                                       <label> Company</label>
-                                      <input type="text" ng-model="newItem.companyName" class="form-control" name="companyName" placeholder="Enter company" required>
+                                      <input type="text" ng-model="newItem.companyName" class="form-control" name="companyName" placeholder="Enter company" dbrans-validate="{unique: isUniqueCompany}" required>
                                       <span class="errorMessage" ng-show="myForm.companyName.$touched && myForm.companyName.$invalid">
-                                              Company name is required
+                                              Company name is required and must be unique
                                       </span>
                                   </div>
                                   <div class="form-group">
