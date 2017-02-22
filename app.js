@@ -1,7 +1,81 @@
 
-  angular.module('myApp', ['ngGeolocation'])
-  .controller('MyController', ['$scope', '$http', '$window', '$timeout', '$geolocation',  function ($scope, $http, $window, $timeout, $geolocation) {
+  angular.module('myApp', ['ngGeolocation', 'dbrans.validate'])
+  .controller('MyController', ['$scope','$filter', '$http', '$window', '$timeout', '$geolocation',  function ($scope, $filter, $http, $window, $timeout, $geolocation) {
         
+        $scope.isUniqueName = function(x) { 
+            var found = $filter('filter')($scope.items,{name: x}, true);
+            if (found && found.length > 0) {
+                return false;
+            } else {
+                return true;
+            }
+        };
+        $scope.isUniqueUsername = function(x) { 
+            var found = $filter('filter')($scope.items,{username: x}, true);
+            if (found && found.length > 0) {
+                return false;
+            } else {
+                return true;
+            }
+        };
+         $scope.isUniqueCompany = function(x) { 
+             var arr=[];
+             angular.forEach($scope.items, function(x){
+                 arr.push(x.company);
+                 console.log('arr - '+JSON.stringify(arr));
+                 return arr;
+             })
+            var found = $filter('filter')(arr,{name: x}, true);
+            console.log(found);
+            if (found && found.length > 0) {
+                console.log(JSON.stringify(found[0]));
+                return false;
+            } else {
+                console.log('Not found');
+                return true;
+            }
+        };
+        /*
+        $scope.isUniqueUsername = function(x) { 
+            var ARR = [];
+                    angular.forEach($scope.items, function(x){
+                        ARR.push(x.username);
+                        return ARR;
+                    });
+                    
+                    if (ARR.indexOf(x) > -1) {
+                    return false
+                    }else{
+                     return true;
+                    }
+        };
+        $scope.isUniqueCompanyame = function(x) { 
+            var ARR = [];
+            var arrNames = [];
+                    angular.forEach($scope.items, function(y){
+                        ARR.push(y.company);
+                        return ARR;
+                    });
+                    console.log(ARR);
+                    angular.forEach(ARR, function(z){
+                        arrNames.push(z.name);
+                        return arrNames;
+                    });
+                    console.log(arrNames);
+
+                    if (arrNames.indexOf(x) > -1) {
+                    return false
+                    }else{
+                     return true;
+                    }
+        };
+        */
+        
+ 
+        
+
+
+                
         $http.get("https://jsonplaceholder.typicode.com/users")
             .then(function(response) {
                 $scope.items = response.data; 
@@ -43,6 +117,10 @@
             }
         };
 
+
+        $scope.testAng = function(name){
+            console.log(name);
+        }
 
         $scope.assignId = function(){
             angular.forEach($scope.items, function(x){
@@ -104,6 +182,7 @@
             return $scope.items;
         };
         
+        
         $scope.copyEmail = function(text) {
             var textArea = document.createElement("textarea");
             textArea.value = text;
@@ -151,7 +230,38 @@
                         };
                     }
                 };
-        });
+        })
+ 
+        /*
+        .directive('validateUnique', function() {
+        
+        return {
+            restrict: 'A',
+            require: 'ngModel',
+            scope: {
+                items:'@'
+            },
+            link: function (scope, element, attrs, ngModel) {
+        
+            ngModel.$validators.username = function (modelValue, viewValue) {
+                    var ARR = [];
+                    angular.forEach(items, function(x){
+                        ARR.push(x.username);
+                        return ARR;
+                    });
+                    
+                    if (ARR.indexOf(viewValue) > -1) {
+                    return false
+                    }else{
+                     return true;
+                    }
+                    
+            
+            };
+            }
+        };
+        
+  });*/
      
     angular.element(document).ready(function() {
       angular.bootstrap(document, ['myApp']);
