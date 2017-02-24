@@ -6,7 +6,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>       
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
     <script src="./validate.js"></script>
-    <script src="./app2.js"></script>
+    <script src="./app.js"></script>
     <script src="./ngGeolocation.js"></script>
     
   </head>
@@ -36,7 +36,7 @@
                 <button ng-click="changeSort('company.name')">Company</button>
                 <button ng-click="changeSort('address.street')">Street</button>
               </div>
-              <div ng-repeat="item in items | orderBy : sortBy | filter : searchName | filter : searchUsername | filter : searchEmail ">
+              <div ng-repeat="item in items | orderBy : sortBy | filter : filterName | filter : filterUsername | filter : filterEmail">
                 <div>
                     <div>{{item.name}}</div>
                     <div>{{item.username}}</div>
