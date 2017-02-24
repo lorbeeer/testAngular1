@@ -1,7 +1,35 @@
 
   angular.module('myApp', ['ngGeolocation', 'dbrans.validate'])
   .controller('MyController', ['$scope','$filter', '$http', '$window', '$timeout', '$geolocation',  function ($scope, $filter, $http, $window, $timeout, $geolocation) {
-        
+        $scope.searchName='';
+        $scope.searchUsername='';
+        $scope.searchEmail='';
+
+        $scope.filterName = function (item) {
+        return anyNameStartsWith(item.name, $scope.searchName);
+    };
+    
+        $scope.filterUsername = function (item) {
+            return anyNameStartsWith(item.username, $scope.searchUsername);
+        };
+
+        $scope.filterEmail = function(item){
+            return emailStartsWith(item.email, $scope.searchEmail);
+            function emailStartsWith(value, search){
+                var search = $scope.searchEmail;
+                return value.substr(0, search.length).toLowerCase() === search.toLowerCase();
+            }
+        };
+
+        function anyNameStartsWith  (fullname, search) {
+            var delimeterRegex = /[ _.]+/;
+            var names = fullname.split(delimeterRegex);
+            //do any of the names in the array start with the search string
+            return names.some(function(name) {
+                return name.toLowerCase().indexOf(search.toLowerCase()) === 0;
+            });
+        }
+
         $scope.isUniqueName = function(x) { 
             var found = $filter('filter')($scope.items,{name: x}, true);
             if (found && found.length > 0) {
@@ -10,6 +38,8 @@
                 return true;
             }
         };
+        
+        
         $scope.isUniqueUsername = function(x) { 
             var found = $filter('filter')($scope.items,{username: x}, true);
             if (found && found.length > 0) {
@@ -18,79 +48,32 @@
                 return true;
             }
         };
+
          $scope.isUniqueCompany = function(x) { 
              var arr=[];
              angular.forEach($scope.items, function(x){
                  arr.push(x.company);
-                 console.log('arr - '+JSON.stringify(arr));
                  return arr;
              })
-            var found = $filter('filter')(arr,{name: x}, true);
-            console.log(found);
-            if (found && found.length > 0) {
-                console.log(JSON.stringify(found[0]));
-                return false;
-            } else {
-                console.log('Not found');
-                return true;
-            }
-        };
-        /*
-        $scope.isUniqueUsername = function(x) { 
-            var ARR = [];
-                    angular.forEach($scope.items, function(x){
-                        ARR.push(x.username);
-                        return ARR;
-                    });
-                    
-                    if (ARR.indexOf(x) > -1) {
-                    return false
-                    }else{
-                     return true;
-                    }
-        };
-        $scope.isUniqueCompanyame = function(x) { 
-            var ARR = [];
-            var arrNames = [];
-                    angular.forEach($scope.items, function(y){
-                        ARR.push(y.company);
-                        return ARR;
-                    });
-                    console.log(ARR);
-                    angular.forEach(ARR, function(z){
-                        arrNames.push(z.name);
-                        return arrNames;
-                    });
-                    console.log(arrNames);
 
-                    if (arrNames.indexOf(x) > -1) {
-                    return false
-                    }else{
-                     return true;
-                    }
+             return !$scope.items.some(function(element){
+                return element.company.name.toLowerCase() === x.toLowerCase();});
         };
-        */
-        
- 
-        
-
-
-                
+       
         $http.get("https://jsonplaceholder.typicode.com/users")
             .then(function(response) {
                 $scope.items = response.data; 
-            })
+                })
             .then($scope.assignId)
             .then(function() {
                 $geolocation.getCurrentPosition()
             .then(function(location) {
                 $scope.location = location
-            })
+                })
             .then($scope.getDistance)
             .then(function(){
                     window.alert("Done!");
-                
-            });    
+                });    
             });
             
 
@@ -231,37 +214,6 @@
                     }
                 };
         })
- 
-        /*
-        .directive('validateUnique', function() {
-        
-        return {
-            restrict: 'A',
-            require: 'ngModel',
-            scope: {
-                items:'@'
-            },
-            link: function (scope, element, attrs, ngModel) {
-        
-            ngModel.$validators.username = function (modelValue, viewValue) {
-                    var ARR = [];
-                    angular.forEach(items, function(x){
-                        ARR.push(x.username);
-                        return ARR;
-                    });
-                    
-                    if (ARR.indexOf(viewValue) > -1) {
-                    return false
-                    }else{
-                     return true;
-                    }
-                    
-            
-            };
-            }
-        };
-        
-  });*/
      
     angular.element(document).ready(function() {
       angular.bootstrap(document, ['myApp']);
